@@ -1,0 +1,36 @@
+########################################
+## CONFIG | Airflow Configs
+########################################
+airflow:
+  executor: KubernetesExecutor
+  webserverSecretKey: "8166166296e8ab812038c6528775cdfc"
+
+createUserJob:
+  useHelmHooks: false
+
+migrateDatabaseJob:
+  useHelmHooks: false
+
+webserver:
+  service:
+    type: NodePort
+    ## service annotations
+    annotations: { app.kubernetes.io/name: airflow-webserver }
+    ports:
+      - name: airflow-ui
+        port: 8080
+        targetPort: 8080
+
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 200
+    scheme: HTTP
+
+  readinessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 200
+    scheme: HTTP
